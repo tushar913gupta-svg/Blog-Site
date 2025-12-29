@@ -1,0 +1,69 @@
+{% include "header.html" %}
+
+<header
+  class="masthead"
+  style="background-image: url('../static/assets/img/admin-bg.jpg')"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if administer %}
+            <h1>Admin List</h1>
+            {% else %}
+            <h1>User List</h1>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="mb-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <table class="table table-striped table-hover">
+              {% for user in users %}
+              {% if administer %}
+              {% if user.admin %}
+              <tr>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                      {% if user.id>1 and user.id != current_user.id %}
+                      <a href="{{ url_for('remove_admin', id=user.id) }}">✘</a>
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endif %}
+              {% else %}
+              {% if not user.admin %}
+              <tr>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                      {% if user.id != current_user.id %}
+                      <a href="{{ url_for('remove_user', id=user.id) }}">✘</a>
+                      {% endif %}
+                  </td>
+              </tr>
+              {% endif %}
+              {% endif %}
+              {% endfor %}
+          </table>
+        </div>
+      </div>
+    </div>
+    {% if administer %}
+    <div class="d-flex justify-content-center mb-4">
+        <a
+          class="btn btn-primary float-center"
+          href="{{url_for('make_admin')}}"
+          >Add Admin</a
+        >
+    </div>
+    {% endif %}
+</main>
+
+{% include "footer.html" %}
